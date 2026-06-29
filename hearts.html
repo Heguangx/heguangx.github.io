@@ -1,0 +1,128 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>❤️</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow:hidden;background:#0a0a0f}
+body{display:flex;align-items:center;justify-content:center;position:relative}
+#c{position:fixed;top:0;left:0;width:100%;height:100%}
+#textWrap{
+  position:fixed;z-index:10;text-align:center;
+  user-select:none;cursor:pointer;
+  transform:translateY(-6%);
+}
+.t-char{
+  display:inline-block;font-size:min(12vw,56px);font-weight:900;
+  color:#ff2d55;
+  text-shadow:0 0 50px #ff2d55,0 0 100px #ff2d55;
+  animation:breathe 4s ease-in-out infinite;
+}
+@keyframes breathe{
+  0%,100%{transform:scale(1);opacity:.8}
+  50%{transform:scale(1.15);opacity:1}
+}
+</style>
+</head>
+<body>
+<div id="textWrap">
+  <div id="mainText">
+    <span class="t-char" style="animation-delay:0s">等</span>
+    <span class="t-char" style="animation-delay:.35s">一</span>
+    <span class="t-char" style="animation-delay:.7s">个</span>
+    <span class="t-char" style="animation-delay:1.05s">人</span>
+    <span class="t-char" style="animation-delay:1.4s">。</span>
+    <span class="t-char" style="animation-delay:1.75s">。</span>
+  </div>
+</div>
+<canvas id="c"></canvas>
+<script>
+const C=document.getElementById('c'),ctx=C.getContext('2d');
+let W,H,hearts=[];
+
+function resize(){W=C.width=innerWidth;H=C.height=innerHeight}
+resize();window.addEventListener('resize',resize);
+
+const COLOR='#ff2d55';
+
+function drawAppleHeart(ctx,s){
+  ctx.beginPath();
+  ctx.moveTo(0,s*.4);
+  ctx.bezierCurveTo(-s*.3,-s*.1,-s*.7,-s*.25,-s*.5,-s*.65);
+  ctx.bezierCurveTo(-s*.35,-s*.85,0,-s*.75,0,-s*.55);
+  ctx.bezierCurveTo(0,-s*.75,s*.35,-s*.85,s*.5,-s*.65);
+  ctx.bezierCurveTo(s*.7,-s*.25,s*.3,-s*.1,0,s*.4);
+  ctx.fill();
+}
+
+class Heart{
+  constructor(x,y){
+    this.x=x;this.y=y;
+    this.size=15+Math.random()*25;
+    this.alpha=.25+Math.random()*.4;
+    this.phase=Math.random()*Math.PI*2;
+    this.speed=.003+Math.random()*.005;
+    this.dx=(Math.random()-.5)*.15;
+    this.dy=-(.03+Math.random()*.08);
+    this.scale=.7+Math.random()*.3;
+  }
+  draw(){
+    const breath=.8+Math.sin(this.phase)*.2;
+    const s=this.size*breath*this.scale;
+    const a=this.alpha*breath;
+    ctx.save();ctx.translate(this.x,this.y);
+    ctx.globalAlpha=a;
+    ctx.fillStyle=COLOR;
+    ctx.shadowColor=COLOR;
+    ctx.shadowBlur=25*a;
+    drawAppleHeart(ctx,s);
+    ctx.restore();
+  }
+  update(){
+    this.phase+=this.speed;
+    this.x+=this.dx;this.y+=this.dy;
+    if(this.x<-80||this.x>W+80||this.y<-80){
+      this.x=Math.random()*W;this.y=H+40;
+      this.dx=(Math.random()-.5)*.15;
+      this.dy=-(.03+Math.random()*.1);
+    }
+  }
+}
+
+for(let i=0;i<50;i++){
+  const h=new Heart(Math.random()*W,Math.random()*H);
+  h.phase=Math.random()*Math.PI*2;
+  hearts.push(h);
+}
+
+setInterval(()=>{
+  if(hearts.length<70){
+    const h=new Heart(Math.random()*W,H+20);
+    h.dy=-(.03+Math.random()*.1);
+    hearts.push(h);
+  }
+},2000);
+
+function loop(){
+  ctx.clearRect(0,0,W,H);
+  hearts.forEach(h=>{h.update();h.draw()});
+  requestAnimationFrame(loop);
+}
+loop();
+
+document.getElementById('textWrap').onclick=function(e){
+  e.stopPropagation();
+  const t=prompt('输入文字：',document.getElementById('mainText').innerText.replace(/<[^>]*>/g,''));
+  if(t&&t.length>0){
+    let html='';
+    for(let i=0;i<t.length;i++){
+      html+='<span class="t-char" style="animation-delay:'+(i*.35)+'s">'+(t[i]===' '?'&nbsp;':t[i])+'</span>';
+    }
+    document.getElementById('mainText').innerHTML=html;
+  }
+};
+</script>
+</body>
+</html>
