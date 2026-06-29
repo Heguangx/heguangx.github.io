@@ -116,7 +116,7 @@ class Burst{
     for(let i=0;i<count;i++){
       const ang=Math.random()*Math.PI*2;
       const spd=4+Math.random()*12;
-      this.parts.push({x:0,y:0,vx:Math.cos(ang)*spd,vy:Math.sin(ang)*spd,size:3+Math.random()*8,alpha:1,decay:.02+Math.random()*.03});
+      this.parts.push({x:0,y:0,vx:Math.cos(ang)*spd,vy:Math.sin(ang)*spd,size:3+Math.random()*8,alpha:1,decay:.016});
     }
   }
   draw(){
@@ -153,7 +153,7 @@ setInterval(()=>{
 function firework(){
   for(let i=0;i<3;i++){
     setTimeout(()=>{
-      const x=W*.1+Math.random()*W*.8;
+      const xs=[W*.2,W*.5,W*.8];const x=xs[i];const y=H*.2+Math.random()*H*.4;
       const y=H*.1+Math.random()*H*.5;
       bursts.push(new Burst(x,y));
     },i*600);
@@ -165,7 +165,7 @@ function triggerCelebration(){
   hearts=[];
   celeb.classList.add('show');
   let count=0;
-  const fw=setInterval(()=>{firework();count++;if(count>=4)clearInterval(fw);},1500);
+  const fw=setInterval(()=>{firework();count++;if(count>=4)clearInterval(fw);},2000);
   firework();
 }
 
@@ -192,5 +192,6 @@ loop();
 </script>
 </body>
 </html>
+
 
 
