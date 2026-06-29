@@ -188,7 +188,7 @@ function firework(){
 function triggerCelebration(){
   celebMode=true;
   hearts=[];
-  celeb.classList.add('show');
+  celeb.classList.add('show');C.style.display='none';document.getElementById('textWrap').style.display='none';
   let count=0;
   const fw=setInterval(()=>{firework();count++;if(count>=4)clearInterval(fw);},2000);
   firework();
@@ -219,4 +219,5 @@ loop();
 </script>
 </body>
 </html>
+
 
