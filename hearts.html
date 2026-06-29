@@ -29,17 +29,16 @@ body{display:flex;align-items:center;justify-content:center;position:relative;fo
   display:none;flex-direction:column;
   align-items:center;justify-content:center;
   width:100%;height:100%;
-  background:rgba(10,10,15,.3);
 }
 #celebration.show{display:flex}
 #bigText{
   font-size:min(15vw,72px);font-weight:900;
   color:#ff2d55;text-align:center;
   text-shadow:0 0 80px rgba(255,45,85,.8),0 0 160px rgba(255,45,85,.4);
-  animation:celebBreathe 2s ease-in-out infinite;
+  animation:celebB 2s ease-in-out infinite;
   line-height:1.4;
 }
-@keyframes celebBreathe{
+@keyframes celebB{
   0%,100%{transform:scale(1);opacity:.9}
   50%{transform:scale(1.08);opacity:1}
 }
@@ -74,7 +73,7 @@ function resize(){
 }
 resize();window.addEventListener('resize',resize);
 
-function drawAppleHeart(ctx,s){
+function drawHeart(ctx,s){
   ctx.beginPath();
   ctx.moveTo(0,s*.4);
   ctx.bezierCurveTo(-s*.3,-s*.1,-s*.7,-s*.25,-s*.5,-s*.65);
@@ -96,60 +95,52 @@ function drawAppleHeart(ctx,s){
 }
 
 class Heart{
-  constructor(x,y){this.x=x;this.y=y;this.size=8+Math.random()*14;this.alpha=.2+Math.random()*.35;this.phase=Math.random()*Math.PI*2;this.speed=.002+.004;this.dx=(Math.random()-.5)*.12;this.dy=-(.02+Math.random()*.06);this.scale=.7+Math.random()*.3}
+  constructor(x,y){this.x=x;this.y=y;this.size=8+Math.random()*14;this.alpha=.2+Math.random()*.3;this.phase=Math.random()*Math.PI*2;this.speed=.002+.004;this.dx=(Math.random()-.5)*.12;this.dy=-(.02+Math.random()*.06);this.scale=.7+Math.random()*.3}
   draw(){
     const br=.8+Math.sin(this.phase)*.2;const s=this.size*br*this.scale;const a=this.alpha*br;
     ctx.save();ctx.translate(this.x,this.y);ctx.globalAlpha=a;
-    ctx.shadowColor='#ff2d55';ctx.shadowBlur=15*a;
-    drawAppleHeart(ctx,s);ctx.restore();
+    ctx.shadowColor='#ff2d55';ctx.shadowBlur=12*a;
+    drawHeart(ctx,s);ctx.restore();
   }
   update(){
     this.phase+=this.speed;this.x+=this.dx;this.y+=this.dy;
-    if(this.x<-80||this.x>W+80||this.y<-80){this.x=Math.random()*W;this.y=H+40;this.dx=(Math.random()-.5)*.12;this.dy=-(.02+Math.random()*.08)}
+    if(this.x<-80||this.x>W+80||this.y<-80){this.x=Math.random()*W;this.y=H+30;this.dx=(Math.random()-.5)*.12;this.dy=-(.02+Math.random()*.08)}
   }
 }
 
-// Firework burst
+// Firework burst - fewer hearts, faster fade
 class Burst{
   constructor(x,y){
-    this.x=x;this.y=y;this.life=1;
-    this.parts=[];
-    const count=35+Math.floor(Math.random()*20);
+    this.x=x;this.y=y;this.parts=[];
+    const count=15+Math.floor(Math.random()*10);
     for(let i=0;i<count;i++){
       const ang=Math.random()*Math.PI*2;
-      const spd=2+Math.random()*10;
-      this.parts.push({x:0,y:0,vx:Math.cos(ang)*spd,vy:Math.sin(ang)*spd,size:3+Math.random()*10,alpha:1,decay:.005+Math.random()*.01,delay:i*.02});
+      const spd=2+Math.random()*8;
+      this.parts.push({x:0,y:0,vx:Math.cos(ang)*spd,vy:Math.sin(ang)*spd,size:3+Math.random()*8,alpha:1,decay:.02+Math.random()*.03});
     }
   }
   draw(){
     this.parts.forEach(p=>{
       if(p.alpha<=0)return;
-      p.delay-=.02;
-      if(p.delay>0)return;
-      ctx.save();
-      const sx=this.x+p.x, sy=this.y+p.y;
-      ctx.translate(sx,sy);
-      ctx.globalAlpha=p.alpha*this.life;
-      ctx.shadowColor='#ff2d55';ctx.shadowBlur=12*p.alpha;
-      drawAppleHeart(ctx,p.size*p.alpha);
+      ctx.save();ctx.translate(this.x+p.x,this.y+p.y);
+      ctx.globalAlpha=p.alpha;
+      ctx.shadowColor='#ff2d55';ctx.shadowBlur=10*p.alpha;
+      drawHeart(ctx,p.size*p.alpha);
       ctx.restore();
     });
   }
   update(){
     this.parts.forEach(p=>{
       if(p.alpha<=0)return;
-      p.delay-=.02;
-      if(p.delay>0)return;
-      p.x+=p.vx;p.vy+=.05;p.y+=p.vy;
+      p.x+=p.vx;p.vy+=.06;p.y+=p.vy;
       p.alpha-=p.decay;
     });
-    this.life-=.003;
   }
-  get alive(){return this.life>0&&this.parts.some(p=>p.alpha>0)}
+  get alive(){return this.parts.some(p=>p.alpha>0)}
 }
 
-// init
-for(let i=0;i<80;i++){
+// floating hearts
+for(let i=0;i=80;i++){
   const h=new Heart(Math.random()*W,Math.random()*H);
   h.phase=Math.random()*Math.PI*2;hearts.push(h);
 }
@@ -159,51 +150,33 @@ setInterval(()=>{
   }
 },2000);
 
-function fireworkBurst(){
+function firework(){
   for(let i=0;i<5;i++){
     setTimeout(()=>{
-      const x=W*.15+Math.random()*W*.7;
+      const x=W*.1+Math.random()*W*.8;
       const y=H*.1+Math.random()*H*.5;
       bursts.push(new Burst(x,y));
-    },i*400);
+    },i*500);
   }
 }
 
-// trigger: text change
 function triggerCelebration(){
   celebMode=true;
+  hearts=[];
   celeb.classList.add('show');
-  // firework loops
   let count=0;
-  const fw=setInterval(()=>{
-    fireworkBurst();
-    count++;
-    if(count>=6)clearInterval(fw);
-  },1200);
-  fireworkBurst();
-  // continuous small bursts
-  setInterval(()=>{
-    if(celebMode){
-      const x=Math.random()*W;const y=Math.random()*H*.5;
-      const b=new Burst(x,y);b.parts=b.parts.slice(0,20);
-      bursts.push(b);
-    }
-  },300);
+  const fw=setInterval(()=>{firework();count++;if(count>=5)clearInterval(fw);},1500);
+  firework();
 }
 
-// edit text
+// click text
 document.getElementById('textWrap').onclick=function(e){
   e.stopPropagation();
   const t=prompt('输入文字：',document.getElementById('mainText').innerText.replace(/<[^>]*>/g,''));
   if(t&&t.length>0){
-    if(t==='马一涵我爱你'){
-      triggerCelebration();
-      return;
-    }
+    if(t==='马一涵我爱你'){triggerCelebration();return;}
     let html='';
-    for(let i=0;i<t.length;i++){
-      html+='<span class="t-char" style="animation-delay:'+(i*.35)+'s">'+(t[i]===' '?'&nbsp;':t[i])+'</span>';
-    }
+    for(let i=0;i<t.length;i++){html+='<span class="t-char" style="animation-delay:'+(i*.35)+'s">'+(t[i]===' '?'&nbsp;':t[i])+'</span>';}
     document.getElementById('mainText').innerHTML=html;
   }
 };
