@@ -358,7 +358,144 @@
             .nav-links a { font-size: 0.8rem; }
             section { padding: 4rem 1.5rem; }
         }
-    </style>
+    
+/* 滚动动画 */
+.fade-in {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+}
+.fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+.hero-content.fade-in.visible {
+    animation: none;
+}
+
+/* 回到顶部按钮 */
+.back-to-top {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #8b5cf6, #3b82f6);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    font-size: 1.3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s, transform 0.3s;
+    z-index: 99;
+    box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+}
+.back-to-top.show {
+    opacity: 1;
+    pointer-events: auto;
+}
+.back-to-top:hover {
+    transform: translateY(-3px);
+}
+
+/* 经历时间线 */
+.timeline {
+    position: relative;
+    max-width: 700px;
+    margin: 0 auto;
+    padding-left: 2rem;
+}
+.timeline::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(180deg, #8b5cf6, #3b82f6);
+}
+.timeline-item {
+    position: relative;
+    padding: 1.5rem 0 1.5rem 2rem;
+}
+.timeline-item::before {
+    content: "";
+    position: absolute;
+    left: -5px;
+    top: 2rem;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #8b5cf6;
+    border: 2px solid #0f0f0f;
+}
+.timeline-date {
+    font-size: 0.85rem;
+    color: #8b5cf6;
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+}
+.timeline-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #e0e0e0;
+    margin-bottom: 0.2rem;
+}
+.timeline-company {
+    font-size: 0.9rem;
+    color: #888;
+    margin-bottom: 0.5rem;
+}
+.timeline-desc {
+    font-size: 0.9rem;
+    color: #b0b0b0;
+    line-height: 1.5;
+}
+
+/* 技能进度条动画延迟 */
+.skill-card:nth-child(1) .skill-bar { transition-delay: 0s; }
+.skill-card:nth-child(2) .skill-bar { transition-delay: 0.1s; }
+.skill-card:nth-child(3) .skill-bar { transition-delay: 0.2s; }
+.skill-card:nth-child(4) .skill-bar { transition-delay: 0.3s; }
+.skill-card:nth-child(5) .skill-bar { transition-delay: 0.4s; }
+.skill-card:nth-child(6) .skill-bar { transition-delay: 0.5s; }
+
+/* 项目链接 */
+.project-links {
+    display: flex;
+    gap: 0.8rem;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+}
+.project-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.4rem 1rem;
+    font-size: 0.8rem;
+    border-radius: 20px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s;
+}
+.project-link.primary {
+    background: linear-gradient(135deg, #8b5cf6, #3b82f6);
+    color: #fff;
+}
+.project-link.secondary {
+    border: 1px solid rgba(139, 92, 246, 0.3);
+    color: #a78bfa;
+}
+.project-link:hover {
+    transform: translateY(-2px);
+}
+
+</style>
 </head>
 <body>
 
@@ -376,7 +513,7 @@
     <!-- 英雄区 -->
     <header>
         <div class="hero-bg"></div>
-        <div class="hero-content">
+        <div class="hero-content fade-in">
             <h1>你好，我是开发者</h1>
             <p>全栈开发者 · 热爱技术 · 持续创造</p>
             <a href="#projects" class="hero-btn">查看我的作品</a>
@@ -385,7 +522,7 @@
     </header>
 
     <!-- 关于 -->
-    <section id="about">
+    <section id="about" class="fade-in">
         <h2 class="section-title">关于我</h2>
         <p class="section-subtitle">用代码构建更好的世界</p>
         <div class="about-grid">
@@ -399,7 +536,7 @@
     </section>
 
     <!-- 技能 -->
-    <section id="skills">
+    <section id="skills" class="fade-in">
         <h2 class="section-title">技能</h2>
         <p class="section-subtitle">我常用的技术与工具</p>
         <div class="skills-grid">
@@ -436,14 +573,39 @@
         </div>
     </section>
 
+    
+    <!-- 经历 -->
+    <section id="experience" class="fade-in">
+        <h2 class="section-title">经历</h2>
+        <p class="section-subtitle">我的学习与工作历程</p>
+        <div class="timeline">
+            <div class="timeline-item">
+                <div class="timeline-date">2024 - 至今</div>
+                <div class="timeline-title">全栈开发工程师</div>
+                <div class="timeline-company">某科技公司</div>
+                <div class="timeline-desc">负责前后端开发与架构设计，参与多个产品的从零到一建设。</div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-date">2022 - 2024</div>
+                <div class="timeline-title">前端开发实习生</div>
+                <div class="timeline-company">某互联网公司</div>
+                <div class="timeline-desc">参与企业级后台管理系统的前端开发，使用 React + TypeScript。</div>
+            </div>
+        </div>
+    </section>
+
     <!-- 项目 -->
-    <section id="projects">
+    <section id="projects" class="fade-in">
         <h2 class="section-title">项目</h2>
         <p class="section-subtitle">一些我觉得有趣的作品</p>
         <div class="projects-grid">
             <div class="project-card">
                 <div class="project-icon">🕸️</div>
                 <h3>网络爬虫工具</h3>
+                <div class="project-links">
+                    <a href="#" class="project-link primary">查看源码</a>
+                    <a href="#" class="project-link secondary">在线演示</a>
+                </div>
                 <p>一个多线程网络爬虫，支持 robots.txt、请求限速、自动重试，可导出 JSON / CSV 格式数据。</p>
                 <span class="project-tag">Python</span>
                 <span class="project-tag">爬虫</span>
@@ -451,6 +613,10 @@
             <div class="project-card">
                 <div class="project-icon">📊</div>
                 <h3>数据分析面板</h3>
+                <div class="project-links">
+                    <a href="#" class="project-link primary">查看源码</a>
+                    <a href="#" class="project-link secondary">在线演示</a>
+                </div>
                 <p>基于 Python 的数据可视化工具，支持从多数据源导入、自动生成交互式图表和报告。</p>
                 <span class="project-tag">Python</span>
                 <span class="project-tag">数据分析</span>
@@ -458,6 +624,10 @@
             <div class="project-card">
                 <div class="project-icon">📝</div>
                 <h3>个人博客</h3>
+                <div class="project-links">
+                    <a href="#" class="project-link primary">查看源码</a>
+                    <a href="#" class="project-link secondary">在线演示</a>
+                </div>
                 <p>用 Markdown 驱动的静态博客生成器，自动生成目录、标签系统和全文搜索。</p>
                 <span class="project-tag">Vue</span>
                 <span class="project-tag">静态博客</span>
@@ -466,7 +636,7 @@
     </section>
 
     <!-- 联系 -->
-    <section id="contact">
+    <section id="contact" class="fade-in">
         <h2 class="section-title">联系我</h2>
         <p class="section-subtitle">期待与你交流</p>
         <div class="contact-flex">
@@ -485,6 +655,58 @@
     <footer>
         &copy; 2026 我的个人网站 · 用 ❤️ 和代码构建
     </footer>
+
+
+    <button id="backToTop" class="back-to-top" aria-label="回到顶部">↑</button>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // 1. 滚动动画
+        var observer = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.15 });
+        document.querySelectorAll('.fade-in').forEach(function(el) {
+            observer.observe(el);
+        });
+
+        // 2. 技能条动画
+        document.querySelectorAll('.skill-bar').forEach(function(bar) {
+            var targetWidth = bar.style.width;
+            bar.style.width = '0%';
+            bar.setAttribute('data-width', targetWidth);
+        });
+        var skillObserver = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) {
+                    entry.target.querySelectorAll('.skill-bar').forEach(function(bar) {
+                        bar.style.width = bar.getAttribute('data-width');
+                    });
+                }
+            });
+        }, { threshold: 0.4 });
+        var skillsGrid = document.querySelector('.skills-grid');
+        if (skillsGrid) skillObserver.observe(skillsGrid);
+
+        // 3. 回到顶部
+        var backBtn = document.getElementById('backToTop');
+        if (backBtn) {
+            window.addEventListener('scroll', function() {
+                if (window.scrollY > 400) {
+                    backBtn.classList.add('show');
+                } else {
+                    backBtn.classList.remove('show');
+                }
+            });
+            backBtn.addEventListener('click', function() {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        }
+    });
+    </script>
 
 </body>
 </html>
